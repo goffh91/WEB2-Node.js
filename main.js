@@ -13,6 +13,7 @@ function getTemplateHTML(title, list, body){
         <body>
           <h1><a href="/">Home</a></h1>
           ${list}
+          <a href="/create">create</a>
           ${body}
         </body>
         </html>
@@ -39,12 +40,11 @@ let app = http.createServer(
 
         if( pathName === '/' )
         {
-            // queryDada 에 id가 정의되어 있지 않은 경우.
             if(queryData.id === undefined)
             {
                 fs.readdir('./data', 'utf8', (error, fileList)=>{
-                    title = 'Node.js';
-                    let description = 'As an asynchronous event driven JavaScript runtime, Node is designed to build scalable network applications. In the following "hello world" example, many connections can be handled concurrently. Upon each connection the callback is fired, but if there is no work to be done, Node will sleep.';
+                    title = 'Hello';
+                    let description = 'This is Node.js App';
                     let list = getTemplateList(fileList);
                     let template = getTemplateHTML(title, list, `<h2>${title}</h2>${description}`);
                     Response.writeHead(200);
@@ -64,10 +64,29 @@ let app = http.createServer(
                 });
             }
         }
+        else if(pathName === '/create')
+        {
+            fs.readdir('./data', 'utf8', (error, fileList)=>{
+                title = 'WEB - Create';
+                let list = getTemplateList(fileList);
+                let template = getTemplateHTML(title, list, 
+                    `<form method="POST" action="/processCreate">
+                        <p><input type="text" name="title" placeholder="title"></p>
+                        <p><textarea name="description" placeholder="description"></textarea></p>
+                        <p><input type="submit" value="submit">
+                        <input type="reset" value="reset"></p>
+                    </form>`);
+                Response.writeHead(200);
+                Response.end(template);
+            });
+        }
         else
         {
             Response.writeHead(404);
-            Response.end('Not Found');    
+            Response.end(`
+                <h1>Not Found</h1>
+                <p><a href="javascript:" onclick="history.go(-1);">go back</a></p>
+            `);
         }
     }
 );

@@ -61,7 +61,7 @@ let app = http.createServer(
                         let template = getTemplateHTML(title, list, `<h2>${title}</h2>${description}`, 
                             `<a href="/create">create</a> 
                             <a href="/update?id=${title}">update</a> 
-                            <form method="POST" action="/deleteProccess" onsubmit="alert('delete!')">
+                            <form method="POST" action="/proccessDelete" onsubmit="if(confirm('Really wanna delete ${title}?')){this.submit();}">
                                 <input type="hidden" name="id" value="${title}">
                                 <input type="submit" value="delete">
                             </form>`);
@@ -151,6 +151,25 @@ let app = http.createServer(
                             Response.end();
                         }
                     );
+                });
+            });
+        }
+        else if(pathName === '/proccessDelete')
+        {
+            let body = '';
+            Request.on('data', (data)=>{
+                body += data;
+                // Too much POST data, kill the connection!
+                // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+                if (body.length > 1e6)
+                    request.connection.destroy();
+            });
+            Request.on('end', (data)=>{
+                let post = qs.parse(body);
+                let id = post.id;
+                fs.unlink(`data/${id}`, (error) => {
+                    Response.writeHead(302, {Location: `/`});
+                    Response.end();
                 });
             });
         }

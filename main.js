@@ -40,7 +40,7 @@ function getTemplateNav(fileList){
     }
     ls += '</ul>';
     let nav = (`
-            <nav class="navbar navbar-inverse" style="border-radius:0;">
+            <nav class="navbar navbar-inverse" style="border-radius:0;margin-bottom:0;">
                 <div class="container-fluid">
                     <!-- Brand and toggle get grouped for better mobile display -->
                     <div class="navbar-header">
@@ -59,7 +59,7 @@ function getTemplateNav(fileList){
                         <li class="//active"><a href="#">About <span class="sr-only">(current)</span></a></li>
                         <li><a href="#">Portfolio</a></li>
                         <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Skills <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Docs <span class="caret"></span></a>
                         ${ls}
                         </li>
                     </ul>
@@ -128,13 +128,13 @@ let app = http.createServer(
         else if(pathName === '/create')
         {
             fs.readdir('./data', 'utf8', (error, fileList)=>{
-                title = 'WEB - Create';
+                title = 'Create';
                 let nav = getTemplateNav(fileList);
                 let template = getTemplateHTML(title, nav, 
                     `<form method="POST" action="/processCreate">
                         <div class="form-group">
                             <p><input type="text" class="form-control" name="title" placeholder="title"></p>
-                            <p><textarea name="description" class="form-control" style="min-height:7em;" placeholder="description"></textarea></p>
+                            <p><textarea name="description" class="form-control" style="min-height:25em;overflow:visible;" placeholder="description"></textarea></p>
                             <p class="pull-right"><input type="submit" class="btn btn-default" value="submit">
                             <button type="button" class="btn btn-default" onclick="history.go(-1)">Cancel</button></p>
                         </div>
@@ -175,10 +175,10 @@ let app = http.createServer(
                     let template = getTemplateHTML(title, nav, 
                         `<form method="POST" action="/processUpdate">
                             <input type="hidden" name="id" value="${title}">
-                            <p><input type="text" name="title" placeholder="title" value="${title}"></p>
-                            <p><textarea name="description" placeholder="description">${description}</textarea></p>
-                            <p><input type="submit" value="submit">
-                            <button type="button" onclick="history.go(-1)">Cancel</button></p>
+                            <p><input type="text" class="form-control" name="title" placeholder="title" value="${title}"></p>
+                            <p><textarea name="description" class="form-control" style="min-height:25em;overflow:visible;" placeholder="description">${description}</textarea></p>
+                            <p><input type="submit" class="btn btn-default" value="submit">
+                            <button type="button" class="btn btn-default" onclick="history.go(-1)">Cancel</button></p>
                         </form>`,'');
                 Response.writeHead(200);
                 Response.end(template);

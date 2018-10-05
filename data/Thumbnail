@@ -1,0 +1,32 @@
+<div class="row">
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="https://images.unsplash.com/photo-1538691929598-f3c649a7b92e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=cb358769c806589fb5884d76c7226aeb&auto=format&fit=crop&w=500&q=60" alt="...">
+      <div class="caption">
+        <h3>Thumbnail - 1</h3>
+        <p>There are anything else..</p>
+        <p><a href="#" class="btn btn-primary" role="button">Edit</a> <a href="#" class="btn btn-danger" role="button">Delete</a></p>
+      </div>
+    </div>
+  </div>
+<div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="https://images.unsplash.com/photo-1534972195531-d756b9bfa9f2?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7325bf88e191e71e966ec0b260d2d91b&auto=format&fit=crop&w=500&q=60" alt="...">
+      <div class="caption">
+        <h3>Thumbnail - 2</h3>
+        <p>What a beautiful Web!</p>
+        <p><a href="#" class="btn btn-primary" role="button">Edit</a> <a href="#" class="btn btn-danger" role="button">Delete</a></p>
+      </div>
+    </div>
+  </div>
+<div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="https://images.unsplash.com/photo-1483058712412-4245e9b90334?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7c5008952226f48ed4bf5d3ea64ff545&auto=format&fit=crop&w=500&q=60" alt="...">
+      <div class="caption">
+        <h3>Thumbnail - 3</h3>
+        <p>I wana be a great Programmer!</p>
+        <p><a href="#" class="btn btn-primary" role="button">Edit</a> <a href="#" class="btn btn-danger" role="button">Delete</a></p>
+      </div>
+    </div>
+  </div>
+</div>

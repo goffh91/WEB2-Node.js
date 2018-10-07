@@ -3,6 +3,7 @@ let fs = require('fs');
 let url = require('url');
 let qs = require('querystring');
 let path = require('path');
+let sanitizeHTML = require('sanitize-html');
 
 let template = require('./lib/template.js');
 
@@ -32,6 +33,12 @@ let app = http.createServer(
                     let filteredId = path.parse(queryData.id).base;
                     let description = fs.readFile(`data/${filteredId}`, 'utf8', 
                     (error, description)=>{
+                        /*title = sanitizeHTML(title);
+                        description = sanitizeHTML(description, {
+                            allowedTags:['a','b','strong','h1','h2','h3','h4','div','img'],
+                            allowedAttributes: { 'a':['*'], 'img':['*'], 'div':['*'] },
+                            allowedIframeHostnames:['www.youtube.com']
+                        });*/
                         let nav = template.nav(fileList);
                         let html = template.html(title, nav, `<h2>${title}</h2><hr>${description}`, 
                             `<form method="POST" action="/proccessDelete" onsubmit="

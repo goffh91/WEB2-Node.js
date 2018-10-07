@@ -100,7 +100,7 @@ let app = http.createServer(
                     let description = 'This is Node.js App';
                     let nav = template.nav(fileList);
                     let html = template.html(title, nav, `<h2>${title}</h2><hr>${description}`, `<a href="/create" class="btn btn-default">create</a>`);
-                    Response.writeHead(200);
+                    Response.writeHead(200, {'Content-Type': 'text/html'});
                     Response.end(html);
                 });
             }
@@ -122,7 +122,7 @@ let app = http.createServer(
                                 <input type="hidden" name="id" value="${title}">
                                 <input type="submit" class="btn btn-default" value="delete">
                             </form>`);
-                        Response.writeHead(200);
+                        Response.writeHead(200, {'Content-Type': 'text/html'});
                         Response.end(html);
                     });
                 });
@@ -142,7 +142,7 @@ let app = http.createServer(
                             <button type="button" class="btn btn-default" onclick="history.go(-1)">Cancel</button></p>
                         </div>
                     </form>`,'');
-                Response.writeHead(200);
+                Response.writeHead(200, {'Content-Type': 'text/html'});
                 Response.end(html);
             });
         }
@@ -183,7 +183,7 @@ let app = http.createServer(
                             <p><input type="submit" class="btn btn-default" value="submit">
                             <button type="button" class="btn btn-default" onclick="history.go(-1)">Cancel</button></p>
                         </form>`,'');
-                Response.writeHead(200);
+                Response.writeHead(200, {'Content-Type': 'text/html'});
                 Response.end(html);
                 });
             });

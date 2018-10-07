@@ -2,87 +2,9 @@ let http = require('http');
 let fs = require('fs');
 let url = require('url');
 let qs = require('querystring');
+let path = require('path');
 
-var template = {
-    html:function(title, nav, body, control)
-    {
-        return (`
-            <!doctype html>
-            <html lang='kr'>
-            <head>
-                <title>${title} | KW</title>
-                <meta charset="utf-8">
-                <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-                <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-            </head>
-            <body>
-                ${nav}
-                <div class='container' style='min-height:500px;'>
-                    <p>${body}</p>
-                    <p>${control}</p>
-                </div>
-                <div class='footer' style='margin:0;padding:1em 2em 1em 2em;background-color:gray;top:0;position:relative;'>
-                    <span style='color:white;'>
-                        <p>Created By KW&emsp;|&emsp;E-mail goffh91@naver.com</p>
-                        <p>Copyright © 2018 KW. All Rights Reserved.</p>
-                    </span>
-                </div>
-            </body>
-            </html>
-        `);
-    },
-    nav:function(fileList)
-    {
-        let ls = '<ul class="dropdown-menu" role="menu">';
-        for(let i=0; i<fileList.length; i++)
-        {
-            ls += `<li><a href='/?id=${fileList[i]}'>${fileList[i]}</a></li>`;
-        }
-        ls += '</ul>';
-        let nav = (`
-                <nav class="navbar navbar-inverse" style="border-radius:0;margin-bottom:0;">
-                    <div class="container-fluid">
-                        <!-- Brand and toggle get grouped for better mobile display -->
-                        <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                                <span class="sr-only">Toggle navigation</span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                            </button>
-                            <a class="navbar-brand" href="/">KW</a>
-                        </div>
-                        
-                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                        <ul class="nav navbar-nav">
-                            <li class="//active"><a href="#">About <span class="sr-only">(current)</span></a></li>
-                            <li><a href="#">Portfolio</a></li>
-                            <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Docs <span class="caret"></span></a>
-                            ${ls}
-                            </li>
-                        </ul>
-                        
-                        <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#">Contct Me</a></li>
-                            <form class="navbar-form navbar-left" role="search">
-                            <div class="form-inline">
-                                <input type="text" class="form-control" placeholder="Search" style="width:10em;">
-                                <input type="submit" class="btn btn-default" value="Search">
-                            </div>
-                            </form>
-                        </ul>
-                        
-                        </div><!-- /.navbar-collapse -->
-                    </div><!-- /.container-fluid -->
-                </nav>
-            `);
-        return nav;
-    }
-}
+let template = require('./lib/template.js');
 
 let app = http.createServer(
     (Request, Response) => {
@@ -107,7 +29,8 @@ let app = http.createServer(
             else
             {
                 fs.readdir('./data', 'utf8', (error, fileList) => {
-                    let description = fs.readFile(`data/${queryData.id}`, 'utf8', 
+                    let filteredId = path.parse(queryData.id).base;
+                    let description = fs.readFile(`data/${filteredId}`, 'utf8', 
                     (error, description)=>{
                         let nav = template.nav(fileList);
                         let html = template.html(title, nav, `<h2>${title}</h2><hr>${description}`, 
@@ -171,7 +94,8 @@ let app = http.createServer(
         else if(pathName === '/update')
         {
             fs.readdir('./data', 'utf8', (error, fileList) => {
-                let description = fs.readFile(`data/${queryData.id}`, 'utf8', 
+                let filteredId = path.parse(queryData.id).base;
+                let description = fs.readFile(`data/${filteredId}`, 'utf8', 
                 (error, description)=>{
                     title = queryData.id;
                     let nav = template.nav(fileList);
@@ -200,10 +124,10 @@ let app = http.createServer(
             });
             Request.on('end', (data) => {
                 let post = qs.parse(body);
-                let id = post.id;
+                let filteredId = path.parse(post.id).base;
                 let title = post.title;
                 let description = post.description;
-                fs.rename(`data/${id}`, `data/${title}`, (error) => {
+                fs.rename(`data/${filteredId}`, `data/${title}`, (error) => {
                     fs.writeFile(`data/${title}`, description, 'utf8',
                         (error)=>{
                             Response.writeHead(302, {Location: `/?id=${title}`});
@@ -225,11 +149,42 @@ let app = http.createServer(
             });
             Request.on('end', (data) => {
                 let post = qs.parse(body);
-                let id = post.id;
-                fs.unlink(`data/${id}`, (error) => {
+                let filteredId = path.parse(post.id).base;
+                fs.unlink(`data/${filteredId}`, (error) => {
                     Response.writeHead(302, {Location: `/`});
                     Response.end();
                 });
+            });
+        }
+        else if(pathName === '/nightmareForm')
+        {
+            fs.readdir('./data', 'utf8', (error, fileList) => {    
+                title = "Nightmare Form Data 생성";
+                let nav = template.nav(fileList);
+                let form = template.ntmrForm();
+                let html = template.html(title, nav, form, '');
+                Response.writeHead(200, {'Content-Type': 'text/html'});
+                Response.end(html);
+            });
+        }
+        else if(pathName === '/ntmrProccess')
+        {
+            let body = '';
+            Request.on('data', (data) => {
+                body += data;
+                // Too much POST data, kill the connection!
+                // 1e6 === 1 * Math.pow(10, 6) === 1 * 1000000 ~~~ 1MB
+                if (body.length > 1e6)
+                    Request.connection.destroy();
+            });
+            Request.on('end', (data) => {
+                let post = qs.parse(body);
+                //fs.writeFile(`data/${title}`, description, 'utf8',
+                //    (error)=>{
+                        Response.writeHead(200, {'Content-Type': 'text/html'});
+                        Response.end('hi');
+                //    }
+                //);
             });
         }
         else
